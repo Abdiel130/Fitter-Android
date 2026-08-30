@@ -1,3 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Identidad -->
     <string name="app_name">Fitter</string>
+
+    <!-- Navegacion principal -->
+    <string name="nav_dashboard">Inicio</string>
+    <string name="nav_training">Entreno</string>
+    <string name="nav_nutrition">Nutricion</string>
+    <string name="nav_progress">Progreso</string>
+    <string name="nav_profile">Perfil</string>
+
+    <!-- Acciones comunes -->
+    <string name="action_continue">Continuar</string>
+    <string name="action_back">Atras</string>
+    <string name="action_skip">Omitir</string>
+    <string name="action_finish">Empezar</string>
+    <string name="action_save">Guardar</string>
+    <string name="action_close">Cerrar</string>
+    <string name="action_retry">Reintentar</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="action_start_session">Iniciar sesion de entreno</string>
+    <string name="action_add_water">Anadir 250 ml de agua</string>
+    <string name="action_skip_rest">Saltar</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_greeting_morning">Buenos dias</string>
+    <string name="dashboard_greeting_afternoon">Buenas tardes</string>
+    <string name="dashboard_greeting_evening">Buenas noches</string>
+    <string name="dashboard_week_block">Semana %1$d del bloque</string>
+    <string name="dashboard_next_session">Siguiente sesion</string>
+    <string name="dashboard_no_routine_title">Sin rutina activa</string>
+    <string name="dashboard_no_routine_body">Crea una rutina semanal para ver aqui tu siguiente sesion.</string>
+    <string name="dashboard_session_summary">%1$d ejercicios · %2$d series</string>
+    <string name="dashboard_session_duration">~%1$d min</string>
+    <string name="dashboard_today_title">Hoy</string>
+    <string name="dashboard_water_value">%1$s / %2$s L</string>
+    <string name="dashboard_sleep_value">Sueno %1$s h</string>
+    <string name="dashboard_supplements_value">%1$d/%2$d suplem.</string>
+    <string name="dashboard_ring_calories">Kcal %1$d</string>
+    <string name="dashboard_ring_protein">Prot. %1$d g</string>
+    <string name="dashboard_ring_sets">Series %1$d</string>
+    <string name="dashboard_rings_title">Objetivos del dia</string>
+
+    <!-- Isla dinamica -->
+    <string name="island_idle_label">Fitter</string>
+    <string name="island_cd">Estado del sistema</string>
+    <string name="island_sync_uploading">Subiendo %1$d registros</string>
+    <string name="island_sync_pending">%1$d sin enviar</string>
+    <string name="island_sync_offline">Sin conexion</string>
+    <string name="island_sync_error">Error de sincronizacion</string>
+    <string name="island_sync_synced">Al dia</string>
+    <string name="island_rest_title">Descanso</string>
+    <string name="island_rest_context">Descanso · %1$s</string>
+    <string name="island_record_title">%1$s x %2$d</string>
+    <string name="island_record_context">Record · %1$s</string>
+
+    <!-- Wizard de arranque -->
+    <string name="wizard_step_of">Paso %1$d de %2$d</string>
+    <string name="wizard_welcome_title">Tu entrenamiento, medido</string>
+    <string name="wizard_welcome_body">Fitter registra rutinas, medidas, nutricion y descanso sin depender de la red. Configuremos lo minimo para empezar.</string>
+    <string name="wizard_welcome_offline">Funciona sin conexion</string>
+    <string name="wizard_welcome_private">Tus datos viven en el dispositivo</string>
+    <string name="wizard_welcome_fast">Registro rapido entre series</string>
+    <string name="wizard_theme_title">Elige el tema</string>
+    <string name="wizard_theme_body">Puedes cambiarlo cuando quieras desde Ajustes.</string>
+    <string name="wizard_theme_midnight">Midnight</string>
+    <string name="wizard_theme_midnight_desc">Azul medianoche con acento menta.</string>
+    <string name="wizard_theme_void">Void</string>
+    <string name="wizard_theme_void_desc">Negro absoluto para pantallas OLED.</string>
+    <string name="wizard_theme_mode">Modo</string>
+    <string name="wizard_units_title">Unidad de peso</string>
+    <string name="wizard_units_body">Se usa para registrar cargas y peso corporal. Los calculos internos siempre se guardan en kilogramos.</string>
+    <string name="wizard_record_title">Primer registro</string>
+    <string name="wizard_record_body">Opcional. Puedes anadirlo mas tarde desde Progreso.</string>
+    <string name="wizard_record_weight">Peso corporal</string>
+    <string name="wizard_record_waist">Cintura (cm)</string>
+    <string name="wizard_record_chest">Pecho (cm)</string>
+    <string name="wizard_account_title">Tu cuenta</string>
+    <string name="wizard_account_body">La sincronizacion con el servidor llegara en una version proxima. De momento puedes reservar tu nombre y correo en el dispositivo.</string>
+    <string name="wizard_account_name">Nombre</string>
+    <string name="wizard_account_email">Correo</string>
+    <string name="wizard_account_disabled">Inicio de sesion no disponible todavia</string>
+
+    <!-- Unidades -->
+    <string name="unit_kg">Kilogramos (kg)</string>
+    <string name="unit_lbs">Libras (lbs)</string>
+    <string name="unit_kg_short">kg</string>
+    <string name="unit_lbs_short">lbs</string>
+
+    <!-- Ajustes -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_appearance">Apariencia</string>
+    <string name="settings_palette">Paleta</string>
+    <string name="settings_mode">Modo</string>
+    <string name="settings_mode_system">Sistema</string>
+    <string name="settings_mode_light">Claro</string>
+    <string name="settings_mode_dark">Oscuro</string>
+    <string name="settings_units">Unidades</string>
+    <string name="settings_developer">Desarrollo</string>
+    <string name="settings_seed_demo">Cargar datos de ejemplo del dia</string>
+    <string name="settings_seed_demo_done">Datos de ejemplo cargados</string>
+    <string name="settings_reset_wizard">Volver a mostrar el asistente</string>
+
+    <!-- Placeholders -->
+    <string name="placeholder_soon">En construccion</string>
+    <string name="placeholder_training">Aqui vivira la sesion de entreno: series, cronometro de descanso, calculadora de discos y 1RM.</string>
+    <string name="placeholder_nutrition">Aqui vivira el registro de comidas, recetas frecuentes, hidratacion y promedios semanales.</string>
+    <string name="placeholder_progress">Aqui viviran el historial de peso, medidas, fotos por pose y series efectivas por musculo.</string>
+    <string name="placeholder_profile">Aqui viviran tu perfil, suplementos, molestias articulares y la cuenta.</string>
+
+    <!-- Estados -->
+    <string name="state_loading">Cargando</string>
+    <string name="value_empty">—</string>
+    <string name="state_empty_title">Nada por aqui todavia</string>
+    <string name="cd_navigate_to">Ir a %1$s</string>
 </resources>

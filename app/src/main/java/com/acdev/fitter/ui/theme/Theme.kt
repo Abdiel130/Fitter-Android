@@ -1,58 +1,94 @@
 package com.acdev.fitter.ui.theme
 
 import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+import com.acdev.fitter.domain.model.FitterPalette
+import com.acdev.fitter.domain.model.ThemeMode
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+private val LocalFitterExtendedColors = staticCompositionLocalOf<FitterExtendedColors> {
+    error("FitterExtendedColors no disponible: envuelve la vista en FitterTheme.")
+}
+
+/**
+ * Acceso a los tokens del tema desde cualquier composable.
+ *
+ * `MaterialTheme` sigue siendo la fuente de los roles estandar (primary, surface, ...);
+ * `FitterTheme` anade lo que Material no cubre y los tokens de espaciado y movimiento.
+ */
+object FitterTheme {
+
+    val colors: FitterExtendedColors
+        @Composable @ReadOnlyComposable get() = LocalFitterExtendedColors.current
+
+    val spacing: FitterSpacing get() = FitterSpacing
+
+    val radius: FitterRadius get() = FitterRadius
+
+    val sizes: FitterSizes get() = FitterSizes
+
+    val motion: FitterMotion get() = FitterMotion
+}
+
+private data class ThemeColors(
+    val scheme: ColorScheme,
+    val extended: FitterExtendedColors
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
-)
+private fun resolveColors(palette: FitterPalette, dark: Boolean): ThemeColors = when {
+    palette == FitterPalette.MIDNIGHT && dark -> ThemeColors(MidnightDarkScheme, MidnightDarkExtended)
+    palette == FitterPalette.MIDNIGHT -> ThemeColors(MidnightLightScheme, MidnightLightExtended)
+    dark -> ThemeColors(VoidDarkScheme, VoidDarkExtended)
+    else -> ThemeColors(VoidLightScheme, VoidLightExtended)
+}
 
 @Composable
+private fun ThemeMode.isDark(): Boolean = when (this) {
+    ThemeMode.SYSTEM -> isSystemInDarkTheme()
+    ThemeMode.DARK -> true
+    ThemeMode.LIGHT -> false
+}
+
+/**
+ * Tema raiz de la app. Todo composable de Fitter vive dentro de este.
+ *
+ * @param palette paleta elegida por el usuario en el asistente o en Ajustes.
+ * @param themeMode como resolver claro/oscuro.
+ */
+@Composable
 fun FitterTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    palette: FitterPalette = FitterPalette.MIDNIGHT,
+    themeMode: ThemeMode = ThemeMode.DARK,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+    val dark = themeMode.isDark()
+    val colors = resolveColors(palette, dark)
+    val view = LocalView.current
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as? Activity)?.window ?: return@SideEffect
+            WindowCompat.getInsetsController(window, view).apply {
+                isAppearanceLightStatusBars = !dark
+                isAppearanceLightNavigationBars = !dark
+            }
+        }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(LocalFitterExtendedColors provides colors.extended) {
+        MaterialTheme(
+            colorScheme = colors.scheme,
+            typography = FitterTypography,
+            shapes = FitterShapes,
+            content = content
+        )
+    }
 }

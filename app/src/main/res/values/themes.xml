@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.Fitter" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- El color real lo pinta Compose (FitterTheme). Este tema solo cubre el arranque. -->
+    <style name="Theme.Fitter" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/boot_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
 </resources>
