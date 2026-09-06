@@ -1,5 +1,8 @@
 package com.acdev.fitter.ui.util
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -26,4 +29,14 @@ object Format {
 
     /** Mililitros a litros con un decimal. */
     fun litres(millilitres: Int): String = oneDecimal(millilitres / 1000.0)
+
+    /**
+     * Fecha media localizada, para mensajes que citan un dia concreto.
+     *
+     * Se construye en cada llamada porque el formateador cachea el idioma y la app permite
+     * cambiarlo sin reiniciar.
+     */
+    fun mediumDate(date: LocalDate): String = date.format(
+        DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.getDefault())
+    )
 }

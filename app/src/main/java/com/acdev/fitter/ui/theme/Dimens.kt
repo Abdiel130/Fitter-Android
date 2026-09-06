@@ -47,6 +47,15 @@ object FitterSizes {
     val ringSmall: Dp = 46.dp
     val ringMedium: Dp = 56.dp
     val hairline: Dp = 1.dp
+
+    /** Ancho reservado al valor de un `NumberStepper`, para que no salte al cambiar de cifra. */
+    val stepperValueWidth: Dp = 44.dp
+
+    /** Circulo con el numero de posicion en una secuencia. */
+    val orderBadge: Dp = 26.dp
+
+    /** Cuadro del icono de un ejercicio en listas y selectores. */
+    val exerciseIconTile: Dp = 40.dp
     val islandCollapsedHeight: Dp = 34.dp
     val islandExpandedHeight: Dp = 96.dp
     val islandCollapsedWidth: Dp = 116.dp

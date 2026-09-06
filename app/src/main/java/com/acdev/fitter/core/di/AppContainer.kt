@@ -14,18 +14,24 @@ import com.acdev.fitter.core.util.UuidGenerator
 import com.acdev.fitter.data.local.FitterDatabase
 import com.acdev.fitter.data.preferences.PreferencesRepositoryImpl
 import com.acdev.fitter.data.repository.BodyRepositoryImpl
+import com.acdev.fitter.data.repository.ExerciseRepositoryImpl
 import com.acdev.fitter.data.repository.NutritionRepositoryImpl
 import com.acdev.fitter.data.repository.RecoveryRepositoryImpl
+import com.acdev.fitter.data.repository.RoutineRepositoryImpl
 import com.acdev.fitter.data.repository.SyncRepositoryImpl
 import com.acdev.fitter.data.repository.TrainingRepositoryImpl
 import com.acdev.fitter.data.repository.UserRepositoryImpl
+import com.acdev.fitter.data.repository.WorkoutRepositoryImpl
 import com.acdev.fitter.domain.repository.BodyRepository
+import com.acdev.fitter.domain.repository.ExerciseRepository
 import com.acdev.fitter.domain.repository.NutritionRepository
 import com.acdev.fitter.domain.repository.PreferencesRepository
 import com.acdev.fitter.domain.repository.RecoveryRepository
+import com.acdev.fitter.domain.repository.RoutineRepository
 import com.acdev.fitter.domain.repository.SyncRepository
 import com.acdev.fitter.domain.repository.TrainingRepository
 import com.acdev.fitter.domain.repository.UserRepository
+import com.acdev.fitter.domain.repository.WorkoutRepository
 import com.acdev.fitter.domain.usecase.CompleteOnboardingUseCase
 import com.acdev.fitter.domain.usecase.ObserveDashboardUseCase
 
@@ -73,6 +79,32 @@ class AppContainer(context: Context) {
             exerciseDao = database.exerciseDao(),
             workoutLogDao = database.workoutLogDao(),
             userDao = database.userDao(),
+            clock = clock,
+            idGenerator = idGenerator
+        )
+    }
+
+    val routineRepository: RoutineRepository by lazy {
+        RoutineRepositoryImpl(
+            trainingDao = database.trainingDao(),
+            userDao = database.userDao(),
+            clock = clock,
+            idGenerator = idGenerator
+        )
+    }
+
+    val workoutRepository: WorkoutRepository by lazy {
+        WorkoutRepositoryImpl(
+            trainingDao = database.trainingDao(),
+            clock = clock,
+            idGenerator = idGenerator
+        )
+    }
+
+    val exerciseRepository: ExerciseRepository by lazy {
+        ExerciseRepositoryImpl(
+            exerciseDao = database.exerciseDao(),
+            trainingDao = database.trainingDao(),
             clock = clock,
             idGenerator = idGenerator
         )

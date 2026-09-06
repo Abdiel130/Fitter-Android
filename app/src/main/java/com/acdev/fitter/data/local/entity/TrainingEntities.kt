@@ -9,9 +9,9 @@ import com.acdev.fitter.domain.model.SetType
 import java.time.Instant
 
 /**
- * Rutina semanal (split). Solo una puede estar activa por usuario.
+ * Rutina: secuencia ciclica de listas de ejercicios. Solo una puede estar activa por usuario.
  *
- * Ejemplo del dominio: "Semana enfoque empuje" con los workouts empuje, jale, pierna, empuje.
+ * Ejemplo del dominio: "Semana enfoque empuje" con las listas empuje, jale, pierna, empuje.
  */
 @Entity(
     tableName = "routine",
@@ -36,31 +36,66 @@ data class RoutineEntity(
 )
 
 /**
- * Dia de la rutina. `orderIndex` define la secuencia ciclica, no el dia de la semana: el usuario
- * decide cuando entrena y la app avanza el puntero.
+ * Lista de ejercicios (dia de entreno). Pertenece al usuario, no a una rutina.
+ *
+ * Se modela asi porque el producto exige que dos rutinas compartan las mismas listas con distinto
+ * orden, y que se pueda crear una lista suelta sin tocar la rutina activa.
  */
 @Entity(
     tableName = "workout",
+    foreignKeys = [
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["userId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index("userId")]
+)
+data class WorkoutEntity(
+    @PrimaryKey val id: String,
+    val userId: String,
+    val name: String,
+    val notes: String? = null,
+    val createdAt: Instant,
+    @Embedded val sync: SyncMetadata = SyncMetadata()
+)
+
+/**
+ * Lista dentro de una rutina. `orderIndex` define la secuencia ciclica, no el dia de la semana:
+ * el usuario decide cuando entrena y la app avanza el puntero.
+ *
+ * La misma lista puede aparecer dos veces en la misma rutina (empuje, jale, pierna, empuje), asi
+ * que la clave es la fila, no el par rutina-lista.
+ */
+@Entity(
+    tableName = "routine_workouts",
     foreignKeys = [
         ForeignKey(
             entity = RoutineEntity::class,
             parentColumns = ["id"],
             childColumns = ["routineId"],
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = WorkoutEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["workoutId"],
+            onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index(value = ["routineId", "orderIndex"], unique = true)]
+    indices = [Index("routineId"), Index("workoutId")]
 )
-data class WorkoutEntity(
+data class RoutineWorkoutEntity(
     @PrimaryKey val id: String,
     val routineId: String,
-    val name: String,
+    val workoutId: String,
     val orderIndex: Int,
-    val createdAt: Instant,
     @Embedded val sync: SyncMetadata = SyncMetadata()
 )
 
-/** Ejercicio dentro de un dia de rutina, con su orden y descanso por defecto. */
+/** Ejercicio dentro de una lista, con su orden y descanso por defecto. */
 @Entity(
     tableName = "workout_exercises",
     foreignKeys = [

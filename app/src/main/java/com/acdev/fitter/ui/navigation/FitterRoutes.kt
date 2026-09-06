@@ -30,6 +30,18 @@ sealed interface FitterRoute {
 
     @Serializable
     data object Settings : FitterRoute
+
+    /** Editor de una rutina concreta. */
+    @Serializable
+    data class RoutineEditor(val routineId: String) : FitterRoute
+
+    /** Editor de una lista de ejercicios. */
+    @Serializable
+    data class WorkoutEditor(val workoutId: String) : FitterRoute
+
+    /** Editor de un ejercicio propio. Sin id es un alta. */
+    @Serializable
+    data class ExerciseEditor(val exerciseId: String? = null) : FitterRoute
 }
 
 /**

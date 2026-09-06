@@ -13,9 +13,11 @@ Aplicación Android de entrenamiento, antropometría, nutrición y recuperación
 | Isla dinámica (indicador de sistema y de sincronización) | Completo |
 | Asistente de primer arranque (5 pasos) | Completo |
 | Dashboard | Completo, con datos reales de la base local |
-| Entreno / Nutrición / Progreso | Placeholder navegable |
+| Entreno: rutinas, listas de ejercicios y catálogo (CRUD completo) | Completo |
+| Entreno: sesión en vivo | **No implementado todavía** |
+| Nutrición / Progreso | Placeholder navegable |
 | Perfil | Muestra la pantalla de Ajustes |
-| Room: 26 entidades, 8 DAO, conversores, esquema exportado | Completo |
+| Room: 27 entidades, 8 DAO, conversores, esquema exportado (v2) | Completo |
 | Backend de servidor / API | **No implementado todavía** |
 | Motor de sincronización (WorkManager) | **No implementado todavía**; el contrato de UI ya existe |
 
@@ -25,7 +27,7 @@ Aplicación Android de entrenamiento, antropometría, nutrición y recuperación
 
 ### 2.1 Entrenamiento semanal
 
-Rutinas por **secuencia cíclica**, no por día de la semana. Una rutina (`routine`) agrupa días (`workout`) con un `orderIndex`; el usuario tiene un puntero (`users.activeSequenceIndex`) que indica qué toca hoy. Así dos rutinas pueden compartir los mismos días con distinto orden:
+Rutinas por **secuencia cíclica**, no por día de la semana. Una rutina (`routine`) agrupa listas de ejercicios (`workout`) a través de `routine_workouts`, cada entrada con su `orderIndex`; el usuario tiene un puntero (`users.activeSequenceIndex`) que indica qué toca hoy. Así dos rutinas pueden compartir los mismos días con distinto orden:
 
 - Semana enfoque empuje → empuje, jale, pierna, empuje
 - Semana enfoque jale → jale, empuje, pierna, jale
@@ -128,14 +130,14 @@ com.acdev.fitter
 
 ## 5. Modelo de datos
 
-26 entidades derivadas de `Fitter.sql`. Los **nombres de tabla** se mantienen en `snake_case` igual que el esquema del servidor; los **nombres de columna** son los de las propiedades Kotlin (`camelCase`), y la traducción al contrato del servidor ocurrirá en los DTO de la capa de red.
+27 entidades derivadas de `Fitter.sql`. Los **nombres de tabla** se mantienen en `snake_case` igual que el esquema del servidor; los **nombres de columna** son los de las propiedades Kotlin (`camelCase`), y la traducción al contrato del servidor ocurrirá en los DTO de la capa de red.
 
 Grupos:
 
 | Fichero | Entidades |
 |---|---|
 | `UserEntities.kt` | `users` |
-| `TrainingEntities.kt` | `routine`, `workout`, `workout_exercises`, `workout_sets` |
+| `TrainingEntities.kt` | `routine`, `routine_workouts`, `workout`, `workout_exercises`, `workout_sets` |
 | `ExerciseEntities.kt` | `exercises`, `body_parts`, `muscles`, `equipments`, tres tablas puente, `exercise_substitutes` |
 | `LogEntities.kt` | `workout_logs`, `workout_log_sets` |
 | `BodyEntities.kt` | `body_measurement`, `progress_photos` |
@@ -144,11 +146,12 @@ Grupos:
 
 ### Correcciones aplicadas al esquema original
 
-Tres puntos del SQL de partida no se trasladaron tal cual, a propósito:
+Cuatro puntos del SQL de partida no se trasladaron tal cual, a propósito:
 
 1. **`supplements.user_id` apuntaba a `workout_exercises(id)`.** La última línea del script añade una clave ajena que contradice la anterior. Se modela contra `users(id)`, que es lo que el resto del esquema implica.
 2. **`daily_food_logs` exigía `food_item_id` **y** `recipe_id` a la vez.** Una línea del diario es un alimento suelto **o** una receta, nunca ambos. Ambas columnas son opcionales y la exclusividad la garantiza el repositorio al insertar.
 3. **`body_measurement.weight_kg` era obligatorio.** El producto dice que un registro puede ser solo foto o solo medidas, así que el peso es opcional.
+4. **`workout` colgaba de `routine` con `routine_id NOT NULL` y `UNIQUE (routine_id, order_index)`.** Eso ata cada lista de ejercicios a una sola rutina y a una sola posición dentro de ella, lo que impide tres cosas que el producto sí pide: que una lista exista por sí misma mientras se construye, que la misma lista se reutilice en varias rutinas, y que una rutina repita una lista en su ciclo (empuje / jale / pierna / empuje). La relación pasa a ser N-N mediante la tabla puente `routine_workouts` (`routine_id`, `workout_id`, `order_index`), y `workout` cuelga de `users`. `Fitter.sql` recoge ya esta forma; en la base local es la migración `MIGRATION_1_2`, que además añade `exercises.iconKey`.
 
 Además, toda tabla propiedad del usuario incorpora `SyncMetadata` (`syncState`, `updatedAt`, `deletedAt`) mediante `@Embedded`. `deletedAt` implementa borrado lógico: nada desaparece de verdad hasta que el servidor confirma la baja.
 

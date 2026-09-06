@@ -24,6 +24,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
 import com.acdev.fitter.R
 import com.acdev.fitter.domain.model.AppPreferences
@@ -37,6 +39,15 @@ import com.acdev.fitter.ui.feature.dashboard.DashboardScreen
 import com.acdev.fitter.ui.feature.onboarding.OnboardingActions
 import com.acdev.fitter.ui.feature.onboarding.OnboardingScreen
 import com.acdev.fitter.ui.feature.settings.SettingsScreen
+import com.acdev.fitter.ui.feature.training.TrainingActions
+import com.acdev.fitter.ui.feature.training.TrainingEvent
+import com.acdev.fitter.ui.feature.training.TrainingScreen
+import com.acdev.fitter.ui.feature.training.exercise.ExerciseEditorActions
+import com.acdev.fitter.ui.feature.training.exercise.ExerciseEditorScreen
+import com.acdev.fitter.ui.feature.training.routine.RoutineEditorActions
+import com.acdev.fitter.ui.feature.training.routine.RoutineEditorScreen
+import com.acdev.fitter.ui.feature.training.workout.WorkoutEditorActions
+import com.acdev.fitter.ui.feature.training.workout.WorkoutEditorScreen
 import com.acdev.fitter.ui.icons.FitterIcons
 import com.acdev.fitter.ui.navigation.FitterRoute
 import com.acdev.fitter.ui.navigation.FitterTransitions
@@ -196,10 +207,36 @@ private fun FitterNavHost(
         }
 
         composable<FitterRoute.Training> {
-            PlaceholderScreen(
-                title = stringResource(R.string.nav_training),
-                message = stringResource(R.string.placeholder_training),
-                icon = FitterIcons.Dumbbell
+            TrainingRoute(navController = navController)
+        }
+
+        composable<FitterRoute.RoutineEditor>(
+            enterTransition = FitterTransitions.forwardEnter,
+            exitTransition = FitterTransitions.forwardExit
+        ) { entry ->
+            RoutineEditorRoute(
+                routineId = entry.toRoute<FitterRoute.RoutineEditor>().routineId,
+                navController = navController
+            )
+        }
+
+        composable<FitterRoute.WorkoutEditor>(
+            enterTransition = FitterTransitions.forwardEnter,
+            exitTransition = FitterTransitions.forwardExit
+        ) { entry ->
+            WorkoutEditorRoute(
+                workoutId = entry.toRoute<FitterRoute.WorkoutEditor>().workoutId,
+                navController = navController
+            )
+        }
+
+        composable<FitterRoute.ExerciseEditor>(
+            enterTransition = FitterTransitions.forwardEnter,
+            exitTransition = FitterTransitions.forwardExit
+        ) { entry ->
+            ExerciseEditorRoute(
+                exerciseId = entry.toRoute<FitterRoute.ExerciseEditor>().exerciseId,
+                navController = navController
             )
         }
 
@@ -240,6 +277,148 @@ private fun FitterNavHost(
             )
         }
     }
+}
+
+@Composable
+private fun TrainingRoute(navController: NavHostController) {
+    val viewModel = FitterViewModels.training()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val pending by viewModel.events.collectAsStateWithLifecycle()
+
+    // Crear o duplicar abre lo recien creado: el evento evita que la pantalla adivine el id.
+    LaunchedEffect(pending) {
+        when (val event = pending) {
+            null -> Unit
+            is TrainingEvent.OpenRoutine -> {
+                viewModel.consumeEvent()
+                navController.navigate(FitterRoute.RoutineEditor(event.routineId))
+            }
+
+            is TrainingEvent.OpenWorkout -> {
+                viewModel.consumeEvent()
+                navController.navigate(FitterRoute.WorkoutEditor(event.workoutId))
+            }
+        }
+    }
+
+    TrainingScreen(
+        state = state,
+        actions = remember(viewModel, navController) {
+            TrainingActions(
+                onSelectTab = viewModel::selectTab,
+                onSearch = viewModel::search,
+                onFilterBodyPart = viewModel::filterByBodyPart,
+                onCreateRoutine = viewModel::createRoutine,
+                onOpenRoutine = { id -> navController.navigate(FitterRoute.RoutineEditor(id)) },
+                onActivateRoutine = viewModel::activateRoutine,
+                onDuplicateRoutine = viewModel::duplicateRoutine,
+                onDeleteRoutine = viewModel::deleteRoutine,
+                onCreateWorkout = viewModel::createWorkout,
+                onOpenWorkout = { id -> navController.navigate(FitterRoute.WorkoutEditor(id)) },
+                onDuplicateWorkout = viewModel::duplicateWorkout,
+                onDeleteWorkout = viewModel::deleteWorkout,
+                onCreateExercise = { navController.navigate(FitterRoute.ExerciseEditor()) },
+                onOpenExercise = { id -> navController.navigate(FitterRoute.ExerciseEditor(id)) }
+            )
+        }
+    )
+}
+
+@Composable
+private fun RoutineEditorRoute(routineId: String, navController: NavHostController) {
+    val viewModel = FitterViewModels.routineEditor(routineId)
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    RoutineEditorScreen(
+        state = state,
+        actions = remember(viewModel, navController) {
+            RoutineEditorActions(
+                onBack = { navController.popBackStack() },
+                onTitleChange = viewModel::updateTitle,
+                onDescriptionChange = viewModel::updateDescription,
+                onActivate = viewModel::activate,
+                onAddWorkouts = viewModel::addWorkouts,
+                onRemoveEntry = viewModel::removeEntry,
+                onMoveEntry = viewModel::moveEntry,
+                onDelete = {
+                    viewModel.delete()
+                    navController.popBackStack()
+                },
+                onOpenWorkout = { id -> navController.navigate(FitterRoute.WorkoutEditor(id)) }
+            )
+        }
+    )
+}
+
+@Composable
+private fun WorkoutEditorRoute(workoutId: String, navController: NavHostController) {
+    val viewModel = FitterViewModels.workoutEditor(workoutId)
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    WorkoutEditorScreen(
+        state = state,
+        actions = remember(viewModel, navController) {
+            WorkoutEditorActions(
+                onBack = { navController.popBackStack() },
+                onNameChange = viewModel::updateName,
+                onNotesChange = viewModel::updateNotes,
+                onSearch = viewModel::search,
+                onFilterBodyPart = viewModel::filterByBodyPart,
+                onCreateExercise = { navController.navigate(FitterRoute.ExerciseEditor()) },
+                onAddExercises = viewModel::addExercises,
+                onRemoveExercise = viewModel::removeExercise,
+                onMoveExercise = viewModel::moveExercise,
+                onRestChange = viewModel::updateRest,
+                onExerciseNotesChange = viewModel::updateExerciseNotes,
+                onAddSet = viewModel::addSet,
+                onUpdateSet = viewModel::updateSet,
+                onApplySetToAll = viewModel::applySetToAll,
+                onRemoveSet = viewModel::removeSet,
+                onDelete = {
+                    viewModel.delete()
+                    navController.popBackStack()
+                }
+            )
+        }
+    )
+}
+
+@Composable
+private fun ExerciseEditorRoute(exerciseId: String?, navController: NavHostController) {
+    val viewModel = FitterViewModels.exerciseEditor(exerciseId)
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // Guardar y borrar cierran la pantalla: el ejercicio se edita para volver a lo que se estaba
+    // haciendo, nunca para quedarse aqui.
+    LaunchedEffect(state.event) {
+        when (state.event) {
+            null -> Unit
+            else -> {
+                viewModel.consumeEvent()
+                navController.popBackStack()
+            }
+        }
+    }
+
+    ExerciseEditorScreen(
+        state = state,
+        actions = remember(viewModel, navController) {
+            ExerciseEditorActions(
+                onBack = { navController.popBackStack() },
+                onNameChange = viewModel::updateName,
+                onIconChange = viewModel::updateIcon,
+                onAddInstruction = viewModel::addInstruction,
+                onInstructionChange = viewModel::updateInstruction,
+                onRemoveInstruction = viewModel::removeInstruction,
+                onToggleBodyPart = viewModel::toggleBodyPart,
+                onToggleTargetMuscle = viewModel::toggleTargetMuscle,
+                onToggleSecondaryMuscle = viewModel::toggleSecondaryMuscle,
+                onToggleEquipment = viewModel::toggleEquipment,
+                onSave = viewModel::save,
+                onDelete = viewModel::delete
+            )
+        }
+    )
 }
 
 /**

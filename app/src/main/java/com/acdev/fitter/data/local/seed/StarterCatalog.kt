@@ -1,12 +1,15 @@
 package com.acdev.fitter.data.local.seed
 
+import com.acdev.fitter.domain.model.ExerciseIcon
+
 /** Definicion declarativa de un ejercicio del catalogo de arranque. */
 data class SeedExercise(
     val key: String,
     val name: String,
     val bodyPart: String,
     val targetMuscle: String,
-    val equipment: String
+    val equipment: String,
+    val icon: ExerciseIcon
 )
 
 /** Ejercicio dentro de un dia de la rutina de arranque. */
@@ -37,23 +40,142 @@ object StarterCatalog {
     const val ROUTINE_TITLE = "PPL 4 dias - enfoque dorsal"
 
     val exercises: List<SeedExercise> = listOf(
-        SeedExercise("bench_press", "Press banca con barra", "chest", "pectoralis major", "barbell"),
-        SeedExercise("incline_db_press", "Press inclinado con mancuernas", "chest", "pectoralis major", "dumbbell"),
-        SeedExercise("machine_fly", "Aperturas en maquina", "chest", "pectoralis major", "machine"),
-        SeedExercise("overhead_press", "Press militar con barra", "shoulders", "deltoid anterior", "barbell"),
-        SeedExercise("lateral_raise", "Elevaciones laterales", "shoulders", "deltoid lateral", "dumbbell"),
-        SeedExercise("triceps_pushdown", "Extension de triceps en polea", "upper arms", "triceps brachii", "cable"),
-        SeedExercise("pull_up", "Dominadas", "back", "latissimus dorsi", "body weight"),
-        SeedExercise("barbell_row", "Remo con barra", "back", "latissimus dorsi", "barbell"),
-        SeedExercise("lat_pulldown", "Jalon al pecho", "back", "latissimus dorsi", "cable"),
-        SeedExercise("seated_row", "Remo sentado en polea", "back", "rhomboids", "cable"),
-        SeedExercise("face_pull", "Face pull", "shoulders", "deltoid posterior", "cable"),
-        SeedExercise("barbell_curl", "Curl con barra", "upper arms", "biceps brachii", "barbell"),
-        SeedExercise("back_squat", "Sentadilla trasera", "upper legs", "quadriceps", "barbell"),
-        SeedExercise("romanian_deadlift", "Peso muerto rumano", "upper legs", "hamstrings", "barbell"),
-        SeedExercise("leg_press", "Prensa de piernas", "upper legs", "quadriceps", "machine"),
-        SeedExercise("leg_curl", "Curl femoral tumbado", "upper legs", "hamstrings", "machine"),
-        SeedExercise("standing_calf", "Elevacion de gemelos de pie", "lower legs", "calves", "machine")
+        SeedExercise(
+            key = "bench_press",
+            name = "Press banca con barra",
+            bodyPart = "chest",
+            targetMuscle = "pectoralis major",
+            equipment = "barbell",
+            icon = ExerciseIcon.BARBELL
+        ),
+        SeedExercise(
+            key = "incline_db_press",
+            name = "Press inclinado con mancuernas",
+            bodyPart = "chest",
+            targetMuscle = "pectoralis major",
+            equipment = "dumbbell",
+            icon = ExerciseIcon.DUMBBELL
+        ),
+        SeedExercise(
+            key = "machine_fly",
+            name = "Aperturas en maquina",
+            bodyPart = "chest",
+            targetMuscle = "pectoralis major",
+            equipment = "machine",
+            icon = ExerciseIcon.MACHINE
+        ),
+        SeedExercise(
+            key = "overhead_press",
+            name = "Press militar con barra",
+            bodyPart = "shoulders",
+            targetMuscle = "deltoid anterior",
+            equipment = "barbell",
+            icon = ExerciseIcon.BARBELL
+        ),
+        SeedExercise(
+            key = "lateral_raise",
+            name = "Elevaciones laterales",
+            bodyPart = "shoulders",
+            targetMuscle = "deltoid lateral",
+            equipment = "dumbbell",
+            icon = ExerciseIcon.DUMBBELL
+        ),
+        SeedExercise(
+            key = "triceps_pushdown",
+            name = "Extension de triceps en polea",
+            bodyPart = "upper arms",
+            targetMuscle = "triceps brachii",
+            equipment = "cable",
+            icon = ExerciseIcon.CABLE
+        ),
+        SeedExercise(
+            key = "pull_up",
+            name = "Dominadas",
+            bodyPart = "back",
+            targetMuscle = "latissimus dorsi",
+            equipment = "body weight",
+            icon = ExerciseIcon.BODYWEIGHT
+        ),
+        SeedExercise(
+            key = "barbell_row",
+            name = "Remo con barra",
+            bodyPart = "back",
+            targetMuscle = "latissimus dorsi",
+            equipment = "barbell",
+            icon = ExerciseIcon.BARBELL
+        ),
+        SeedExercise(
+            key = "lat_pulldown",
+            name = "Jalon al pecho",
+            bodyPart = "back",
+            targetMuscle = "latissimus dorsi",
+            equipment = "cable",
+            icon = ExerciseIcon.CABLE
+        ),
+        SeedExercise(
+            key = "seated_row",
+            name = "Remo sentado en polea",
+            bodyPart = "back",
+            targetMuscle = "rhomboids",
+            equipment = "cable",
+            icon = ExerciseIcon.CABLE
+        ),
+        SeedExercise(
+            key = "face_pull",
+            name = "Face pull",
+            bodyPart = "shoulders",
+            targetMuscle = "deltoid posterior",
+            equipment = "cable",
+            icon = ExerciseIcon.CABLE
+        ),
+        SeedExercise(
+            key = "barbell_curl",
+            name = "Curl con barra",
+            bodyPart = "upper arms",
+            targetMuscle = "biceps brachii",
+            equipment = "barbell",
+            icon = ExerciseIcon.BARBELL
+        ),
+        SeedExercise(
+            key = "back_squat",
+            name = "Sentadilla trasera",
+            bodyPart = "upper legs",
+            targetMuscle = "quadriceps",
+            equipment = "barbell",
+            icon = ExerciseIcon.LEGS
+        ),
+        SeedExercise(
+            key = "romanian_deadlift",
+            name = "Peso muerto rumano",
+            bodyPart = "upper legs",
+            targetMuscle = "hamstrings",
+            equipment = "barbell",
+            icon = ExerciseIcon.BARBELL
+        ),
+        SeedExercise(
+            key = "leg_press",
+            name = "Prensa de piernas",
+            bodyPart = "upper legs",
+            targetMuscle = "quadriceps",
+            equipment = "machine",
+            icon = ExerciseIcon.LEGS
+        ),
+        SeedExercise(
+            key = "leg_curl",
+            name = "Curl femoral tumbado",
+            bodyPart = "upper legs",
+            targetMuscle = "hamstrings",
+            equipment = "machine",
+            icon = ExerciseIcon.LEGS
+        ),
+        SeedExercise(
+            key = "standing_calf",
+            name = "Elevacion de gemelos de pie",
+            bodyPart = "lower legs",
+            targetMuscle = "calves",
+            equipment = "machine",
+            icon = ExerciseIcon.MACHINE
+        )
     )
 
     val workouts: List<SeedWorkout> = listOf(

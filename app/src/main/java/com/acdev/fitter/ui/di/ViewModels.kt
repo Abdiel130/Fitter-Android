@@ -9,6 +9,10 @@ import com.acdev.fitter.core.di.AppContainer
 import com.acdev.fitter.ui.AppViewModel
 import com.acdev.fitter.ui.feature.dashboard.DashboardViewModel
 import com.acdev.fitter.ui.feature.onboarding.OnboardingViewModel
+import com.acdev.fitter.ui.feature.training.TrainingViewModel
+import com.acdev.fitter.ui.feature.training.exercise.ExerciseEditorViewModel
+import com.acdev.fitter.ui.feature.training.routine.RoutineEditorViewModel
+import com.acdev.fitter.ui.feature.training.workout.WorkoutEditorViewModel
 
 /**
  * Acceso al grafo de dependencias desde la composicion.
@@ -74,4 +78,76 @@ object FitterViewModels {
             }
         )
     }
+
+    @Composable
+    fun training(): TrainingViewModel {
+        val container = LocalAppContainer.current
+        return viewModel(
+            factory = viewModelFactory {
+                initializer {
+                    TrainingViewModel(
+                        userRepository = container.userRepository,
+                        routineRepository = container.routineRepository,
+                        workoutRepository = container.workoutRepository,
+                        exerciseRepository = container.exerciseRepository
+                    )
+                }
+            }
+        )
+    }
+
+    @Composable
+    fun routineEditor(routineId: String): RoutineEditorViewModel {
+        val container = LocalAppContainer.current
+        return viewModel(
+            key = routineId,
+            factory = viewModelFactory {
+                initializer {
+                    RoutineEditorViewModel(
+                        routineId = routineId,
+                        userRepository = container.userRepository,
+                        routineRepository = container.routineRepository,
+                        workoutRepository = container.workoutRepository
+                    )
+                }
+            }
+        )
+    }
+
+    @Composable
+    fun workoutEditor(workoutId: String): WorkoutEditorViewModel {
+        val container = LocalAppContainer.current
+        return viewModel(
+            key = workoutId,
+            factory = viewModelFactory {
+                initializer {
+                    WorkoutEditorViewModel(
+                        workoutId = workoutId,
+                        userRepository = container.userRepository,
+                        workoutRepository = container.workoutRepository,
+                        exerciseRepository = container.exerciseRepository
+                    )
+                }
+            }
+        )
+    }
+
+    @Composable
+    fun exerciseEditor(exerciseId: String?): ExerciseEditorViewModel {
+        val container = LocalAppContainer.current
+        return viewModel(
+            key = exerciseId ?: NEW_EXERCISE_KEY,
+            factory = viewModelFactory {
+                initializer {
+                    ExerciseEditorViewModel(
+                        exerciseId = exerciseId,
+                        userRepository = container.userRepository,
+                        exerciseRepository = container.exerciseRepository
+                    )
+                }
+            }
+        )
+    }
+
+    private const val NEW_EXERCISE_KEY = "new"
 }

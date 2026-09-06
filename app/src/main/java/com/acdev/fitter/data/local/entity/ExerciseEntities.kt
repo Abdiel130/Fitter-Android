@@ -35,6 +35,8 @@ data class ExerciseEntity(
     val gifUrl: String? = null,
     /** Pasos de ejecucion serializados como JSON. */
     val instructions: String? = null,
+    /** Nombre de la constante de `ExerciseIcon`. Nulo usa el icono por defecto. */
+    val iconKey: String? = null,
     val createdAt: Instant,
     @Embedded val sync: SyncMetadata = SyncMetadata()
 )

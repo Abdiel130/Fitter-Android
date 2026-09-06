@@ -32,6 +32,7 @@ import com.acdev.fitter.data.local.entity.ProgressPhotoEntity
 import com.acdev.fitter.data.local.entity.RecipeEntity
 import com.acdev.fitter.data.local.entity.RecipeItemEntity
 import com.acdev.fitter.data.local.entity.RoutineEntity
+import com.acdev.fitter.data.local.entity.RoutineWorkoutEntity
 import com.acdev.fitter.data.local.entity.SupplementEntity
 import com.acdev.fitter.data.local.entity.UserEntity
 import com.acdev.fitter.data.local.entity.WorkoutEntity
@@ -39,6 +40,7 @@ import com.acdev.fitter.data.local.entity.WorkoutExerciseEntity
 import com.acdev.fitter.data.local.entity.WorkoutLogEntity
 import com.acdev.fitter.data.local.entity.WorkoutLogSetEntity
 import com.acdev.fitter.data.local.entity.WorkoutSetEntity
+import com.acdev.fitter.data.local.migration.FitterMigrations
 
 /**
  * Base de datos local. Es la unica fuente de verdad de la app: la UI jamas lee de la red.
@@ -53,6 +55,7 @@ import com.acdev.fitter.data.local.entity.WorkoutSetEntity
         UserEntity::class,
         RoutineEntity::class,
         WorkoutEntity::class,
+        RoutineWorkoutEntity::class,
         WorkoutExerciseEntity::class,
         WorkoutSetEntity::class,
         ExerciseEntity::class,
@@ -77,7 +80,7 @@ import com.acdev.fitter.data.local.entity.WorkoutSetEntity
         DailySupplementLogEntity::class,
         JointDiscomfortLogEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(FitterConverters::class)
@@ -98,6 +101,7 @@ abstract class FitterDatabase : RoomDatabase() {
         fun build(context: Context): FitterDatabase =
             Room.databaseBuilder(context.applicationContext, FitterDatabase::class.java, NAME)
                 .setJournalMode(JournalMode.WRITE_AHEAD_LOGGING)
+                .addMigrations(*FitterMigrations.all)
                 .build()
     }
 }

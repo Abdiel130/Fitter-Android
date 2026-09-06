@@ -104,7 +104,6 @@
 
     <!-- Placeholders -->
     <string name="placeholder_soon">En construccion</string>
-    <string name="placeholder_training">Aqui vivira la sesion de entreno: series, cronometro de descanso, calculadora de discos y 1RM.</string>
     <string name="placeholder_nutrition">Aqui vivira el registro de comidas, recetas frecuentes, hidratacion y promedios semanales.</string>
     <string name="placeholder_progress">Aqui viviran el historial de peso, medidas, fotos por pose y series efectivas por musculo.</string>
     <string name="placeholder_profile">Aqui viviran tu perfil, suplementos, molestias articulares y la cuenta.</string>
@@ -114,4 +113,142 @@
     <string name="value_empty">—</string>
     <string name="state_empty_title">Nada por aqui todavia</string>
     <string name="cd_navigate_to">Ir a %1$s</string>
+
+    <!-- Acciones de edicion -->
+    <string name="action_add">Anadir</string>
+    <string name="action_delete">Eliminar</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_duplicate">Duplicar</string>
+    <string name="action_edit">Editar</string>
+    <string name="action_done">Listo</string>
+    <string name="cd_move_up">Subir una posicion</string>
+    <string name="cd_move_down">Bajar una posicion</string>
+    <string name="cd_remove">Quitar</string>
+    <string name="cd_decrease">Disminuir %1$s</string>
+    <string name="cd_increase">Aumentar %1$s</string>
+    <string name="cd_go_back">Volver</string>
+    <string name="cd_exercise_icon">Icono del ejercicio</string>
+
+    <!-- Entreno: pestanas -->
+    <string name="training_tab_routines">Rutinas</string>
+    <string name="training_tab_workouts">Listas</string>
+    <string name="training_tab_exercises">Ejercicios</string>
+
+    <!-- Rutinas -->
+    <string name="routines_new">Nueva rutina</string>
+    <string name="routines_default_title">Rutina nueva</string>
+    <string name="routines_empty_title">Sin rutinas todavia</string>
+    <string name="routines_empty_body">Una rutina agrupa tus listas de ejercicios en el orden en que las vas a entrenar.</string>
+    <string name="routine_active_badge">Activa</string>
+    <string name="routine_activate">Activar</string>
+    <string name="routine_summary">%1$s · %2$s · %3$s</string>
+    <string name="routine_copy_name">%1$s (copia)</string>
+    <string name="routine_locked_title">Semana en curso</string>
+    <string name="routine_locked_body">Ya entrenaste con esta rutina esta semana. Podras cambiar de rutina el %1$s.</string>
+    <string name="routine_locked_hint">Bloqueada hasta el %1$s</string>
+    <string name="routine_title_label">Nombre de la rutina</string>
+    <string name="routine_description_label">Descripcion (opcional)</string>
+    <string name="routine_sequence_section">Secuencia</string>
+    <string name="routine_sequence_hint">El orden es una sugerencia: al entrenar puedes saltartelo.</string>
+    <string name="routine_add_workout">Anadir lista</string>
+    <string name="routine_empty_workouts">Esta rutina aun no tiene listas. Anade las que quieras y ordenalas.</string>
+    <string name="routine_delete">Eliminar rutina</string>
+    <string name="routine_delete_confirm">Se eliminara la rutina. Las listas de ejercicios se conservan.</string>
+    <string name="routine_not_found">Esta rutina ya no existe.</string>
+
+    <!-- Listas de ejercicios -->
+    <string name="workouts_new">Nueva lista</string>
+    <string name="workouts_default_name">Lista nueva</string>
+    <string name="workouts_empty_title">Sin listas todavia</string>
+    <string name="workouts_empty_body">Una lista es un dia de entreno: sus ejercicios, su orden y sus series planificadas.</string>
+    <string name="workout_summary">%1$s · %2$s</string>
+    <string name="workout_copy_name">%1$s (copia)</string>
+    <string name="workout_name_label">Nombre de la lista</string>
+    <string name="workout_notes_label">Notas (opcional)</string>
+    <string name="workout_exercises_section">Ejercicios</string>
+    <string name="workout_add_exercise">Anadir ejercicio</string>
+    <string name="workout_empty_exercises">Esta lista aun no tiene ejercicios.</string>
+    <string name="workout_delete">Eliminar lista</string>
+    <string name="workout_delete_confirm">Se eliminara la lista y desaparecera de las rutinas que la usan.</string>
+    <string name="workout_not_found">Esta lista ya no existe.</string>
+    <string name="workout_rest_label">Descanso entre series</string>
+    <string name="workout_exercise_notes_label">Notas del ejercicio</string>
+    <string name="workout_sets_section">Series planificadas</string>
+    <string name="workout_add_set">Anadir serie</string>
+    <string name="workout_remove_exercise">Quitar de la lista</string>
+
+    <!-- Series -->
+    <string name="set_reps_range">%1$d-%2$d</string>
+    <string name="set_rpe_value">RPE %1$s</string>
+    <string name="set_rest_value">%1$d s</string>
+    <string name="set_editor_title">Serie %1$d</string>
+    <string name="set_type_label">Tipo de serie</string>
+    <string name="set_type_normal">Normal</string>
+    <string name="set_type_warmup">Calentamiento</string>
+    <string name="set_type_dropset">Dropset</string>
+    <string name="set_type_failure">Al fallo</string>
+    <string name="set_reps_label">Repeticiones</string>
+    <string name="set_rep_min">Minimo</string>
+    <string name="set_rep_max">Maximo</string>
+    <string name="set_rpe_label">RPE objetivo</string>
+    <string name="set_rpe_none">Sin RPE</string>
+    <string name="set_rest_label">Descanso de esta serie</string>
+    <string name="set_rest_inherited">Hereda el del ejercicio</string>
+    <string name="set_apply_all">Aplicar a todas las series</string>
+    <string name="set_delete">Eliminar serie</string>
+
+    <!-- Selectores -->
+    <string name="picker_title">Anadir ejercicios</string>
+    <string name="picker_search">Buscar ejercicio</string>
+    <string name="picker_add">Anadir %1$d</string>
+    <string name="picker_filter_all">Todo</string>
+    <string name="picker_empty">Ningun ejercicio coincide con la busqueda.</string>
+    <string name="picker_workouts_title">Anadir listas</string>
+    <string name="picker_workouts_empty">Crea una lista antes de armar la rutina.</string>
+
+    <!-- Catalogo de ejercicios -->
+    <string name="exercises_new">Nuevo ejercicio</string>
+    <string name="exercises_empty_title">Catalogo vacio</string>
+    <string name="exercises_empty_body">Crea tu primer ejercicio para usarlo en cualquier lista.</string>
+    <string name="exercise_custom_badge">Propio</string>
+    <string name="exercise_editor_new">Nuevo ejercicio</string>
+    <string name="exercise_editor_edit">Editar ejercicio</string>
+    <string name="exercise_name_label">Nombre</string>
+    <string name="exercise_icon_label">Icono</string>
+    <string name="exercise_body_parts_label">Zonas del cuerpo</string>
+    <string name="exercise_target_muscles_label">Musculos objetivo</string>
+    <string name="exercise_secondary_muscles_label">Musculos secundarios</string>
+    <string name="exercise_equipment_label">Material</string>
+    <string name="exercise_instructions_label">Instrucciones</string>
+    <string name="exercise_instruction_step">Paso %1$d</string>
+    <string name="exercise_add_instruction">Anadir paso</string>
+    <string name="exercise_new_tag_label">Anadir otro</string>
+    <string name="exercise_new_tag_hint">Nombre nuevo</string>
+    <string name="exercise_delete">Eliminar ejercicio</string>
+    <string name="exercise_delete_confirm">Se eliminara de tu catalogo.</string>
+    <string name="exercise_readonly">Ejercicio del catalogo comun: solo se puede consultar.</string>
+    <string name="exercise_name_required">Ponle un nombre al ejercicio.</string>
+    <string name="exercise_no_muscle">Sin musculo asignado</string>
+
+    <!-- Recuentos -->
+    <plurals name="count_workouts">
+        <item quantity="one">%d lista</item>
+        <item quantity="other">%d listas</item>
+    </plurals>
+    <plurals name="count_exercises">
+        <item quantity="one">%d ejercicio</item>
+        <item quantity="other">%d ejercicios</item>
+    </plurals>
+    <plurals name="count_sets">
+        <item quantity="one">%d serie</item>
+        <item quantity="other">%d series</item>
+    </plurals>
+    <plurals name="count_routines_using">
+        <item quantity="one">En %d rutina</item>
+        <item quantity="other">En %d rutinas</item>
+    </plurals>
+    <plurals name="count_exercise_usages">
+        <item quantity="one">Se usa en %d lista</item>
+        <item quantity="other">Se usa en %d listas</item>
+    </plurals>
 </resources>

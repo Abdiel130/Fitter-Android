@@ -15,6 +15,7 @@ import com.acdev.fitter.data.local.entity.ExerciseEquipmentCrossRef
 import com.acdev.fitter.data.local.entity.ExerciseMuscleCrossRef
 import com.acdev.fitter.data.local.entity.MuscleEntity
 import com.acdev.fitter.data.local.entity.RoutineEntity
+import com.acdev.fitter.data.local.entity.RoutineWorkoutEntity
 import com.acdev.fitter.data.local.entity.SyncMetadata
 import com.acdev.fitter.data.local.entity.WorkoutEntity
 import com.acdev.fitter.data.local.entity.WorkoutExerciseEntity
@@ -90,6 +91,7 @@ class TrainingRepositoryImpl(
                     userId = null,
                     externalId = seed.key,
                     name = seed.name,
+                    iconKey = seed.icon.name,
                     createdAt = now,
                     // El catalogo comun no viaja al servidor: nace ya sincronizado.
                     sync = SyncMetadata(syncState = SyncState.SYNCED, updatedAt = now)
@@ -131,14 +133,25 @@ class TrainingRepositoryImpl(
         val workouts = StarterCatalog.workouts.map { seed ->
             seed to WorkoutEntity(
                 id = idGenerator.newId(),
-                routineId = routineId,
+                userId = userId,
                 name = seed.name,
-                orderIndex = seed.orderIndex,
                 createdAt = now,
                 sync = meta
             )
         }
         trainingDao.upsertWorkouts(workouts.map { it.second })
+
+        trainingDao.upsertRoutineWorkouts(
+            workouts.map { (seed, workout) ->
+                RoutineWorkoutEntity(
+                    id = idGenerator.newId(),
+                    routineId = routineId,
+                    workoutId = workout.id,
+                    orderIndex = seed.orderIndex,
+                    sync = meta
+                )
+            }
+        )
 
         val workoutExercises = workouts.flatMap { (seedWorkout, workout) ->
             seedWorkout.exercises.mapIndexed { index, seedExercise ->

@@ -19,8 +19,16 @@ CREATE TABLE `routine` (
 
 CREATE TABLE `workout` (
   `id` uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  `routine_id` uuid NOT NULL,
+  `user_id` uuid NOT NULL COMMENT 'La lista pertenece al usuario, no a una rutina',
   `name` varchar(100) NOT NULL COMMENT 'Ej: Jale A (Dorsal), Empuje A, Pierna',
+  `notes` text,
+  `created_at` timestamp DEFAULT (now())
+);
+
+CREATE TABLE `routine_workouts` (
+  `id` uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
+  `routine_id` uuid NOT NULL,
+  `workout_id` uuid NOT NULL,
   `order_index` int NOT NULL COMMENT 'Orden rotativo de ejecución cíclica',
   `created_at` timestamp DEFAULT (now())
 );
@@ -238,7 +246,7 @@ CREATE TABLE `joint_discomfort_logs` (
   `notes` varchar(255) COMMENT 'Ej: Pinchazo en press militar'
 );
 
-CREATE UNIQUE INDEX `workout_index_0` ON `workout` (`routine_id`, `order_index`);
+CREATE UNIQUE INDEX `routine_workouts_index_0` ON `routine_workouts` (`routine_id`, `order_index`);
 
 CREATE UNIQUE INDEX `daily_habit_logs_index_1` ON `daily_habit_logs` (`user_id`, `log_date`);
 
@@ -246,7 +254,11 @@ ALTER TABLE `users` ADD FOREIGN KEY (`current_routine`) REFERENCES `routine` (`i
 
 ALTER TABLE `routine` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
-ALTER TABLE `workout` ADD FOREIGN KEY (`routine_id`) REFERENCES `routine` (`id`);
+ALTER TABLE `workout` ADD FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+ALTER TABLE `routine_workouts` ADD FOREIGN KEY (`routine_id`) REFERENCES `routine` (`id`);
+
+ALTER TABLE `routine_workouts` ADD FOREIGN KEY (`workout_id`) REFERENCES `workout` (`id`);
 
 ALTER TABLE `workout_exercises` ADD FOREIGN KEY (`workout_id`) REFERENCES `workout` (`id`);
 
