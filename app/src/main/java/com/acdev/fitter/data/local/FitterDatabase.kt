@@ -80,7 +80,7 @@ import com.acdev.fitter.data.local.migration.FitterMigrations
         DailySupplementLogEntity::class,
         JointDiscomfortLogEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 @TypeConverters(FitterConverters::class)

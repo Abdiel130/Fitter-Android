@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Todo el trafico va cifrado. El source set de depuracion sustituye este archivo para
+     permitir HTTP en claro solo contra los hosts de desarrollo. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>

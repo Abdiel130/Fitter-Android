@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Solo en depuracion. Si cambia la IP de tu maquina en la LAN, editala aqui y en el
+     buildConfigField API_BASE_URLS del bloque debug. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">10.0.2.2</domain>
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">192.168.1.81</domain>
+    </domain-config>
+</network-security-config>

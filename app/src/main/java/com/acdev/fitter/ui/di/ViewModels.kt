@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.acdev.fitter.core.di.AppContainer
 import com.acdev.fitter.ui.AppViewModel
 import com.acdev.fitter.ui.feature.dashboard.DashboardViewModel
+import com.acdev.fitter.ui.feature.login.LoginViewModel
 import com.acdev.fitter.ui.feature.onboarding.OnboardingViewModel
 import com.acdev.fitter.ui.feature.training.TrainingViewModel
 import com.acdev.fitter.ui.feature.training.exercise.ExerciseEditorViewModel
@@ -40,7 +41,25 @@ object FitterViewModels {
                 initializer {
                     AppViewModel(
                         preferencesRepository = container.preferencesRepository,
+                        signOutUseCase = container.signOut,
+                        sessionRepository = container.sessionRepository,
                         syncRepository = container.syncRepository
+                    )
+                }
+            }
+        )
+    }
+
+    @Composable
+    fun login(): LoginViewModel {
+        val container = LocalAppContainer.current
+        return viewModel(
+            factory = viewModelFactory {
+                initializer {
+                    LoginViewModel(
+                        signIn = container.signIn,
+                        baseUrlResolver = container.baseUrlResolver,
+                        baseUrlStore = container.baseUrlStore
                     )
                 }
             }

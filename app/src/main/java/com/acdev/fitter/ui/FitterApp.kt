@@ -29,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
 import com.acdev.fitter.R
 import com.acdev.fitter.domain.model.AppPreferences
+import com.acdev.fitter.domain.model.RootTarget
 import com.acdev.fitter.ui.components.FitterBottomBar
 import com.acdev.fitter.ui.components.PlaceholderScreen
 import com.acdev.fitter.ui.components.PulseLoader
@@ -36,6 +37,8 @@ import com.acdev.fitter.ui.components.island.DynamicIsland
 import com.acdev.fitter.ui.components.island.resolveIslandState
 import com.acdev.fitter.ui.di.FitterViewModels
 import com.acdev.fitter.ui.feature.dashboard.DashboardScreen
+import com.acdev.fitter.ui.feature.login.LoginActions
+import com.acdev.fitter.ui.feature.login.LoginScreen
 import com.acdev.fitter.ui.feature.onboarding.OnboardingActions
 import com.acdev.fitter.ui.feature.onboarding.OnboardingScreen
 import com.acdev.fitter.ui.feature.settings.SettingsScreen
@@ -58,36 +61,62 @@ import com.acdev.fitter.ui.theme.FitterTheme
 /**
  * Raiz de la interfaz.
  *
- * Decide tres cosas y nada mas: si ya hay preferencias cargadas, con que tema pintar y si toca el
- * asistente o la app. Toda la navegacion cuelga de aqui.
+ * Decide tres cosas y nada mas: con que tema pintar, que destino raiz toca y nada de navegacion
+ * interna, que cuelga del grafo de `MainScaffold`.
+ *
+ * Los cuatro destinos viven en un solo `AnimatedContent` gobernado por un tipo cerrado: anadir un
+ * estado obliga al compilador a cubrirlo aqui en lugar de anidar condiciones.
  */
 @Composable
 fun FitterApp() {
     val appViewModel = FitterViewModels.app()
     val preferences by appViewModel.preferences.collectAsStateWithLifecycle()
+    val root by appViewModel.root.collectAsStateWithLifecycle()
 
     val current = preferences
-    if (current == null) {
+    if (current == null || root == RootTarget.BOOT) {
         BootScreen()
         return
     }
 
     FitterTheme(palette = current.palette, themeMode = current.themeMode) {
         AnimatedContent(
-            targetState = current.onboardingCompleted,
+            targetState = root,
             transitionSpec = {
                 fadeIn(FitterMotion.standardTween(FitterMotion.Duration.EMPHASIZED)) togetherWith
                     fadeOut(FitterMotion.standardTween())
             },
             label = "appRoot"
-        ) { completed ->
-            if (completed) {
-                MainScaffold(appViewModel = appViewModel, preferences = current)
-            } else {
-                OnboardingRoute()
+        ) { target ->
+            when (target) {
+                RootTarget.BOOT -> BootScreen()
+                RootTarget.LOGIN -> LoginRoute()
+                RootTarget.ONBOARDING -> OnboardingRoute()
+                RootTarget.MAIN -> MainScaffold(appViewModel = appViewModel, preferences = current)
             }
         }
     }
+}
+
+@Composable
+private fun LoginRoute() {
+    val viewModel = FitterViewModels.login()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    LoginScreen(
+        state = state,
+        actions = remember(viewModel) {
+            LoginActions(
+                onEmailChange = viewModel::updateEmail,
+                onPasswordChange = viewModel::updatePassword,
+                onTogglePasswordVisible = viewModel::togglePasswordVisible,
+                onSubmit = viewModel::signIn,
+                onToggleAdvanced = viewModel::toggleAdvanced,
+                onManualBaseUrlChange = viewModel::updateManualBaseUrl,
+                onSaveManualBaseUrl = viewModel::saveManualBaseUrl
+            )
+        }
+    )
 }
 
 /**
@@ -127,9 +156,7 @@ private fun OnboardingRoute() {
                 onWeightUnitChange = viewModel::selectWeightUnit,
                 onWeightChange = viewModel::updateWeight,
                 onWaistChange = viewModel::updateWaist,
-                onChestChange = viewModel::updateChest,
-                onNameChange = viewModel::updateName,
-                onEmailChange = viewModel::updateEmail
+                onChestChange = viewModel::updateChest
             )
         }
     )
@@ -257,24 +284,14 @@ private fun FitterNavHost(
         }
 
         composable<FitterRoute.Profile> {
-            SettingsScreen(
-                preferences = preferences,
-                onPaletteChange = appViewModel::setPalette,
-                onThemeModeChange = appViewModel::setThemeMode,
-                onWeightUnitChange = appViewModel::setWeightUnit
-            )
+            SettingsRoute(appViewModel = appViewModel, preferences = preferences)
         }
 
         composable<FitterRoute.Settings>(
             enterTransition = FitterTransitions.forwardEnter,
             exitTransition = FitterTransitions.forwardExit
         ) {
-            SettingsScreen(
-                preferences = preferences,
-                onPaletteChange = appViewModel::setPalette,
-                onThemeModeChange = appViewModel::setThemeMode,
-                onWeightUnitChange = appViewModel::setWeightUnit
-            )
+            SettingsRoute(appViewModel = appViewModel, preferences = preferences)
         }
     }
 }
@@ -433,4 +450,18 @@ private fun NavHostController.navigateToTab(destination: TopLevelDestination) {
         launchSingleTop = true
         restoreState = true
     }
+}
+
+@Composable
+private fun SettingsRoute(appViewModel: AppViewModel, preferences: AppPreferences) {
+    val accountEmail by appViewModel.account.collectAsStateWithLifecycle()
+
+    SettingsScreen(
+        preferences = preferences,
+        accountEmail = accountEmail,
+        onPaletteChange = appViewModel::setPalette,
+        onThemeModeChange = appViewModel::setThemeMode,
+        onWeightUnitChange = appViewModel::setWeightUnit,
+        onSignOut = appViewModel::signOut
+    )
 }

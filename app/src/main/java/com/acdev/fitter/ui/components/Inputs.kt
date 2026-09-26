@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +22,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import com.acdev.fitter.ui.icons.FitterIcons
 import com.acdev.fitter.ui.theme.FitterMotion
@@ -30,6 +34,9 @@ import com.acdev.fitter.ui.theme.FitterTheme
 /**
  * Campo de texto de Fitter. Envuelve el de Material para fijar forma, colores y teclado en un
  * unico sitio: ninguna pantalla configura un `OutlinedTextField` por su cuenta.
+ *
+ * Los parametros de error, ocultacion y contenido final llevan valor por defecto para que anadir
+ * contrasenas y validacion no obligue a tocar los formularios que ya existen.
  */
 @Composable
 fun FitterTextField(
@@ -38,7 +45,14 @@ fun FitterTextField(
     label: String,
     modifier: Modifier = Modifier,
     keyboardType: KeyboardType = KeyboardType.Text,
-    singleLine: Boolean = true
+    singleLine: Boolean = true,
+    isError: Boolean = false,
+    supportingText: String? = null,
+    /** Oculta el contenido. La pantalla decide si se puede revelar; el campo solo obedece. */
+    obscured: Boolean = false,
+    imeAction: ImeAction = ImeAction.Default,
+    onImeAction: (() -> Unit)? = null,
+    trailing: @Composable (() -> Unit)? = null
 ) {
     OutlinedTextField(
         value = value,
@@ -46,16 +60,29 @@ fun FitterTextField(
         label = { Text(text = label, style = MaterialTheme.typography.bodyMedium) },
         modifier = modifier.fillMaxWidth(),
         singleLine = singleLine,
+        isError = isError,
         shape = RoundedCornerShape(FitterTheme.radius.md),
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+        visualTransformation = when {
+            obscured -> PasswordVisualTransformation()
+            else -> VisualTransformation.None
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
+        keyboardActions = KeyboardActions(onAny = { onImeAction?.invoke() }),
+        trailingIcon = trailing,
+        supportingText = supportingText?.let { text ->
+            { Text(text = text, style = MaterialTheme.typography.bodySmall) }
+        },
         textStyle = MaterialTheme.typography.bodyLarge,
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = FitterTheme.colors.hairline,
+            errorBorderColor = FitterTheme.colors.syncError,
             focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            errorContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+            errorSupportingTextColor = FitterTheme.colors.syncError
         )
     )
 }

@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,10 +31,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import com.acdev.fitter.R
 import com.acdev.fitter.domain.model.FitterPalette
 import com.acdev.fitter.domain.model.ThemeMode
 import com.acdev.fitter.domain.model.WeightUnit
+import com.acdev.fitter.ui.components.FitterCard
 import com.acdev.fitter.ui.components.FitterPrimaryButton
 import com.acdev.fitter.ui.components.FitterTextButton
 import com.acdev.fitter.ui.components.FitterTextField
@@ -49,6 +53,9 @@ import com.acdev.fitter.ui.theme.VoidDarkScheme
  *
  * Cinco pasos, todos omitibles salvo la eleccion de unidad, y ninguno pide permisos. Se muestra
  * una sola vez: al terminar queda marcado en preferencias.
+ *
+ * El ultimo paso es un resumen de la cuenta con la que se inicio sesion, no un formulario: la
+ * identidad la fija el servidor.
  */
 @Composable
 fun OnboardingScreen(
@@ -102,7 +109,7 @@ fun OnboardingScreen(
                     OnboardingStep.THEME -> ThemeStep(state, actions)
                     OnboardingStep.UNITS -> UnitsStep(state, actions)
                     OnboardingStep.FIRST_RECORD -> FirstRecordStep(state, actions)
-                    OnboardingStep.ACCOUNT -> AccountStep(state, actions)
+                    OnboardingStep.ACCOUNT -> AccountStep(state)
                 }
             }
         }
@@ -122,8 +129,6 @@ data class OnboardingActions(
     val onWeightChange: (String) -> Unit,
     val onWaistChange: (String) -> Unit,
     val onChestChange: (String) -> Unit,
-    val onNameChange: (String) -> Unit,
-    val onEmailChange: (String) -> Unit
 )
 
 @Composable
@@ -276,28 +281,35 @@ private fun ColumnScope.FirstRecordStep(state: OnboardingUiState, actions: Onboa
 }
 
 @Composable
-private fun ColumnScope.AccountStep(state: OnboardingUiState, actions: OnboardingActions) {
+private fun ColumnScope.AccountStep(state: OnboardingUiState) {
     StepHeader(
         title = stringResource(R.string.wizard_account_title),
         body = stringResource(R.string.wizard_account_body)
     )
 
-    FitterTextField(
-        value = state.name,
-        onValueChange = actions.onNameChange,
-        label = stringResource(R.string.wizard_account_name)
-    )
-    FitterTextField(
-        value = state.email,
-        onValueChange = actions.onEmailChange,
-        label = stringResource(R.string.wizard_account_email),
-        keyboardType = KeyboardType.Email
-    )
-    Text(
-        text = stringResource(R.string.wizard_account_disabled),
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
-    )
+    FitterCard {
+        AccountRow(stringResource(R.string.wizard_account_name), state.accountName)
+        Spacer(Modifier.height(FitterTheme.spacing.md))
+        AccountRow(stringResource(R.string.wizard_account_email), state.accountEmail)
+    }
+}
+
+@Composable
+private fun AccountRow(label: String, value: String) {
+    Column(verticalArrangement = Arrangement.spacedBy(FitterTheme.spacing.xxs)) {
+        Text(
+            text = label.uppercase(),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = value.ifBlank { stringResource(R.string.value_empty) },
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
 }
 
 @Composable

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.acdev.fitter.data.local.entity.UserEntity
+import java.time.Instant
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,4 +25,7 @@ interface UserDao {
 
     @Query("UPDATE users SET currentRoutineId = :routineId, activeSequenceIndex = :sequenceIndex WHERE id = :userId")
     suspend fun updateActiveRoutine(userId: String, routineId: String?, sequenceIndex: Int)
+
+    @Query("UPDATE users SET remoteId = :remoteId, updatedAt = :updatedAt WHERE id = :userId")
+    suspend fun updateRemoteId(userId: String, remoteId: String, updatedAt: Instant)
 }

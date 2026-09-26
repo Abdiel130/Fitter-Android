@@ -2,6 +2,8 @@
 
 Aplicación Android de entrenamiento, antropometría, nutrición y recuperación. **Offline-first**: la base de datos local es la única fuente de verdad y el servidor es un destino de sincronización, nunca un requisito para usar la app.
 
+Versión actual: **0.0.1**. Los cambios de cada versión están en [CHANGELOG.md](CHANGELOG.md); los estándares de código, en [CLAUDE.md](CLAUDE.md).
+
 ---
 
 ## 1. Estado actual
@@ -17,8 +19,10 @@ Aplicación Android de entrenamiento, antropometría, nutrición y recuperación
 | Entreno: sesión en vivo | **No implementado todavía** |
 | Nutrición / Progreso | Placeholder navegable |
 | Perfil | Muestra la pantalla de Ajustes |
-| Room: 27 entidades, 8 DAO, conversores, esquema exportado (v2) | Completo |
-| Backend de servidor / API | **No implementado todavía** |
+| Room: 27 entidades, 8 DAO, conversores, esquema exportado (v3) | Completo |
+| Inicio de sesión, sesión persistente y cierre de sesión | Completo |
+| Capa de red: cliente único, resolución de dirección y renovación de credenciales | Completo |
+| Resto de la API de servidor (entrenos, nutrición, medidas) | **No implementado todavía** |
 | Motor de sincronización (WorkManager) | **No implementado todavía**; el contrato de UI ya existe |
 
 ---

@@ -1,10 +1,10 @@
 package com.acdev.fitter
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.fragment.app.FragmentActivity
 import com.acdev.fitter.ui.FitterApp
 import com.acdev.fitter.ui.di.LocalAppContainer
 
@@ -13,8 +13,10 @@ import com.acdev.fitter.ui.di.LocalAppContainer
  *
  * Su trabajo es minimo: activar el modo de borde a borde, publicar el contenedor de dependencias
  * en la composicion y ceder el control a `FitterApp`.
+ *
+ * Extiende `FragmentActivity` y no `ComponentActivity` porque `BiometricPrompt` lo exige.
  */
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()

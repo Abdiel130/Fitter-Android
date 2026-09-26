@@ -77,10 +77,9 @@
     <string name="wizard_record_waist">Cintura (cm)</string>
     <string name="wizard_record_chest">Pecho (cm)</string>
     <string name="wizard_account_title">Tu cuenta</string>
-    <string name="wizard_account_body">La sincronizacion con el servidor llegara en una version proxima. De momento puedes reservar tu nombre y correo en el dispositivo.</string>
+    <string name="wizard_account_body">Entraste con esta cuenta. Tus entrenamientos se sincronizaran con ella.</string>
     <string name="wizard_account_name">Nombre</string>
     <string name="wizard_account_email">Correo</string>
-    <string name="wizard_account_disabled">Inicio de sesion no disponible todavia</string>
 
     <!-- Unidades -->
     <string name="unit_kg">Kilogramos (kg)</string>
@@ -251,4 +250,45 @@
         <item quantity="one">Se usa en %d lista</item>
         <item quantity="other">Se usa en %d listas</item>
     </plurals>
+
+    <!-- Autenticacion -->
+    <string name="auth_title">Fitter</string>
+    <string name="auth_subtitle">Entra para sincronizar tu entrenamiento</string>
+    <string name="auth_email">Correo</string>
+    <string name="auth_password">Contrasena</string>
+    <string name="auth_sign_in">Entrar</string>
+    <string name="auth_no_account">Las cuentas se crean fuera de la app</string>
+    <string name="auth_unlock">Desbloquear</string>
+    <string name="auth_unlock_body">Usa tu huella para continuar</string>
+    <string name="auth_biometric_protect_title">Protege tu sesion</string>
+    <string name="auth_biometric_protect_subtitle">Tu huella guardara la llave de esta sesion</string>
+    <string name="auth_biometric_renew_title">Sesion expirada</string>
+    <string name="auth_biometric_renew_subtitle">Confirma con tu huella para sincronizar</string>
+    <string name="auth_biometric_cancel">Cancelar</string>
+    <string name="auth_error_required">Este campo es obligatorio</string>
+    <string name="auth_error_email_format">Ese correo no tiene buena forma</string>
+    <string name="auth_error_password_short">La contrasena es demasiado corta</string>
+    <string name="auth_error_credentials">Correo o contrasena incorrectos</string>
+    <string name="auth_error_offline">Sin conexion. Revisa la red e intentalo de nuevo</string>
+    <string name="auth_error_unreachable">No se encontro el servidor. Comprueba que este encendido</string>
+    <string name="auth_error_timeout">El servidor tardo demasiado en responder</string>
+    <string name="auth_error_server">El servidor respondio con un error (%1$d)</string>
+    <string name="auth_error_unexpected">Algo salio mal. Intentalo de nuevo</string>
+    <string name="auth_error_session_expired">Tu sesion caduco. Vuelve a entrar</string>
+    <string name="auth_advanced_title">Servidor</string>
+    <string name="auth_advanced_hint">Deja el campo vacio para detectarlo solo</string>
+    <string name="auth_advanced_url">Direccion del servidor</string>
+    <string name="auth_advanced_save">Usar esta direccion</string>
+    <string name="auth_advanced_detected">Detectado: %1$s</string>
+    <string name="auth_advanced_searching">Buscando servidor</string>
+    <string name="auth_account_section">Cuenta</string>
+    <string name="auth_sign_out">Cerrar sesion</string>
+    <string name="auth_sign_out_confirm_title">Cerrar sesion</string>
+    <string name="auth_sign_out_confirm_body">Tus entrenamientos se quedan en este dispositivo</string>
+    <string name="auth_device_name">Android</string>
+
+    <!-- Descripciones de accesibilidad de autenticacion -->
+    <string name="cd_password_show">Mostrar contrasena</string>
+    <string name="cd_password_hide">Ocultar contrasena</string>
+    <string name="cd_unlock_biometric">Desbloquear con huella</string>
 </resources>

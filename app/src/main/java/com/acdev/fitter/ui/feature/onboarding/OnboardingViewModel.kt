@@ -11,6 +11,7 @@ import com.acdev.fitter.domain.usecase.OnboardingResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,8 +26,9 @@ data class OnboardingUiState(
     val weightInput: String = "",
     val waistInput: String = "",
     val chestInput: String = "",
-    val name: String = "",
-    val email: String = "",
+    /** Identidad que devolvio el inicio de sesion. El asistente solo la muestra. */
+    val accountName: String = "",
+    val accountEmail: String = "",
     val isSubmitting: Boolean = false
 ) {
     val isFirstStep: Boolean get() = step == OnboardingStep.WELCOME
@@ -40,6 +42,9 @@ data class OnboardingUiState(
  *
  * El tema se aplica en cuanto se elige, sin esperar a terminar: el usuario ve el resultado en la
  * misma pantalla en la que decide. El resto de datos se guarda al final, en una sola operacion.
+ *
+ * El ultimo paso ya no pide nombre ni correo: los trae la sesion y solo se muestran para que el
+ * usuario confirme con que cuenta va a entrar.
  */
 class OnboardingViewModel(
     private val preferencesRepository: PreferencesRepository,
@@ -48,6 +53,15 @@ class OnboardingViewModel(
 
     private val _state = MutableStateFlow(OnboardingUiState())
     val state: StateFlow<OnboardingUiState> = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            val account = preferencesRepository.preferences.first()
+            _state.update {
+                it.copy(accountName = account.displayName, accountEmail = account.email)
+            }
+        }
+    }
 
     fun next() {
         val current = _state.value.step
@@ -79,10 +93,6 @@ class OnboardingViewModel(
 
     fun updateChest(value: String) = _state.update { it.copy(chestInput = value) }
 
-    fun updateName(value: String) = _state.update { it.copy(name = value) }
-
-    fun updateEmail(value: String) = _state.update { it.copy(email = value) }
-
     /**
      * Cierra el asistente. Marcar la preferencia es lo ultimo que ocurre, de modo que si algo
      * falla antes el usuario vuelve a verlo en el siguiente arranque en lugar de entrar a una app
@@ -96,8 +106,6 @@ class OnboardingViewModel(
         viewModelScope.launch {
             completeOnboarding(
                 OnboardingResult(
-                    displayName = snapshot.name.trim(),
-                    email = snapshot.email.trim(),
                     weightUnit = snapshot.weightUnit,
                     bodyWeight = snapshot.weightInput.toDecimalOrNull(),
                     waistCm = snapshot.waistInput.toDecimalOrNull(),

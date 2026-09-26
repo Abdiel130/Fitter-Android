@@ -4,8 +4,9 @@ import android.app.Application
 import com.acdev.fitter.core.di.AppContainer
 
 /**
- * Punto de entrada del proceso. Solo construye el contenedor de dependencias: cualquier trabajo
- * pesado en `onCreate` retrasaria el arranque en frio.
+ * Punto de entrada del proceso. Construye el contenedor de dependencias y registra el observador de
+ * actividades que la biometria necesita: cualquier trabajo mas pesado retrasaria el arranque en
+ * frio, y todo lo demas dentro del contenedor es perezoso.
  */
 class FitterApplication : Application() {
 
@@ -15,5 +16,6 @@ class FitterApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         container = AppContainer(this)
+        registerActivityLifecycleCallbacks(container.activityProvider)
     }
 }

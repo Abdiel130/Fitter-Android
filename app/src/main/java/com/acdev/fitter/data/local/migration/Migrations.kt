@@ -93,5 +93,18 @@ object FitterMigrations {
         }
     }
 
-    val all: Array<Migration> = arrayOf(MIGRATION_1_2)
+    /**
+     * v3: `users` gana `remoteId`.
+     *
+     * Es el enlace entre el usuario local y su cuenta del servidor. Queda nulo en las instalaciones
+     * existentes y se rellena en el primer inicio de sesion, sin tocar ni una fila de datos.
+     */
+    val MIGRATION_2_3: Migration = object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE `users` ADD COLUMN `remoteId` TEXT")
+            db.execSQL("CREATE INDEX IF NOT EXISTS `index_users_remoteId` ON `users` (`remoteId`)")
+        }
+    }
+
+    val all: Array<Migration> = arrayOf(MIGRATION_1_2, MIGRATION_2_3)
 }

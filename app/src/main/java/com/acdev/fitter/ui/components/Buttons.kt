@@ -17,13 +17,17 @@ import com.acdev.fitter.ui.theme.FitterTheme
 /**
  * Accion principal. Una por pantalla como maximo: si hay dos igual de fuertes, es que la pantalla
  * esta pidiendo dos decisiones distintas.
+ *
+ * En carga el boton se apaga y muestra el indicador de la app en lugar de su texto, para que nadie
+ * tenga que colocar un indicador suelto al lado.
  */
 @Composable
 fun FitterPrimaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    loading: Boolean = false
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -32,7 +36,7 @@ fun FitterPrimaryButton(
         modifier = modifier
             .height(FitterTheme.sizes.minTouchTarget)
             .pressScale(interactionSource),
-        enabled = enabled,
+        enabled = enabled && !loading,
         shape = RoundedCornerShape(FitterTheme.radius.pill),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -41,7 +45,13 @@ fun FitterPrimaryButton(
         contentPadding = PaddingValues(horizontal = FitterTheme.spacing.xxl),
         interactionSource = interactionSource
     ) {
-        Text(text = text, style = MaterialTheme.typography.labelLarge)
+        when {
+            loading -> PulseLoader(
+                contentDescription = null,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+            else -> Text(text = text, style = MaterialTheme.typography.labelLarge)
+        }
     }
 }
 

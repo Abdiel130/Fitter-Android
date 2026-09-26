@@ -11,8 +11,13 @@ import com.acdev.fitter.domain.model.Hydration
 import com.acdev.fitter.domain.model.NextSession
 import com.acdev.fitter.domain.model.NutritionSummary
 import com.acdev.fitter.domain.model.PlannedSet
+import com.acdev.fitter.domain.model.RemoteResult
+import com.acdev.fitter.domain.model.RemoteUser
 import com.acdev.fitter.domain.model.RoutineDetail
 import com.acdev.fitter.domain.model.RoutineSummary
+import com.acdev.fitter.domain.model.SessionState
+import com.acdev.fitter.domain.model.SessionTokens
+import com.acdev.fitter.domain.model.SignedInAccount
 import com.acdev.fitter.domain.model.SleepSummary
 import com.acdev.fitter.domain.model.SupplementProgress
 import com.acdev.fitter.domain.model.SyncStatus
@@ -47,8 +52,19 @@ interface UserRepository {
 
     val currentUserName: Flow<String>
 
+    /** Id de la cuenta del servidor a la que pertenece el usuario local, o null si no hay enlace. */
+    val currentRemoteId: Flow<String?>
+
     /** Crea el usuario local del dispositivo y devuelve su id. Idempotente. */
-    suspend fun ensureLocalUser(name: String, email: String): String
+    suspend fun ensureLocalUser(name: String, email: String, remoteId: String?): String
+
+    /**
+     * Ata un usuario local a su cuenta del servidor. Idempotente.
+     *
+     * No se reasigna la clave primaria porque la referencian veintisiete tablas: el enlace se
+     * guarda en una columna aparte para que la sincronizacion sepa de quien son las filas.
+     */
+    suspend fun linkRemoteId(localUserId: String, remoteId: String)
 }
 
 interface TrainingRepository {
@@ -190,4 +206,31 @@ interface BodyRepository {
 
 interface SyncRepository {
     val status: Flow<SyncStatus>
+}
+
+interface SessionRepository {
+    val state: Flow<SessionState>
+
+    /** Id del usuario en el servidor: la sincronizacion futura marcara con el lo que suba. */
+    val remoteUserId: Flow<String?>
+
+    /** Abre sesion guardando usuario y tokens. False si los tokens no se pudieron proteger. */
+    suspend fun open(user: RemoteUser, tokens: SessionTokens): Boolean
+
+    /** Espejo local de la bandera del servidor. */
+    suspend fun setSetupCompleted(completed: Boolean)
+
+    /** Cierra la sesion. Nunca toca la base de datos local. */
+    suspend fun clearSession()
+}
+
+interface AuthRepository {
+    suspend fun signIn(email: String, password: String): RemoteResult<SignedInAccount>
+
+    suspend fun signOut(allDevices: Boolean): RemoteResult<Unit>
+
+    suspend fun me(): RemoteResult<RemoteUser>
+
+    /** Marca o reinicia el asistente en el servidor. Devuelve el estado que quedo guardado. */
+    suspend fun pushSetupCompleted(completed: Boolean): RemoteResult<Boolean>
 }

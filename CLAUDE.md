@@ -182,3 +182,13 @@ Para cambiar la tipografía del proyecto entero basta con sustituir `FitterDispl
 ```
 
 Ambos deben pasar sin advertencias nuevas del compilador. Si añadiste una entidad o cambiaste el esquema, comprueba que `app/schemas` refleja el cambio y que existe la migración.
+
+---
+
+## 11. Registro de cambios
+
+Todo cambio que alguien pueda **notar usando la app** se anota en [CHANGELOG.md](CHANGELOG.md), bajo `## [No publicado]`, antes de darlo por terminado. Un arreglo interno sin efecto visible va en una sola línea bajo **Interno**, o no va.
+
+Se escribe **qué cambió para quien usa la app**, nunca qué ficheros, clases o funciones se tocaron: eso es el mensaje del commit, que es otro documento con otro lector. Una entrada que solo se entiende leyendo el código está mal escrita.
+
+Al publicar una versión, `## [No publicado]` pasa a `## [x.y.z] - AAAA-MM-DD` y `versionName` en `app/build.gradle.kts` se mueve con ella. Las dos cifras van siempre juntas.
